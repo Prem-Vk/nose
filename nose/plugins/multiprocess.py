@@ -668,6 +668,8 @@ def __runner(ix, testQueue, resultQueue, currentaddr, currentstart,
     config.plugins.configure(config.options,config)
     config.plugins.begin()
     log.debug("Worker %s executing, pid=%d", ix,os.getpid())
+    loader = loaderClass(config=config)
+    loader.suiteClass.suiteClass = NoSharedFixtureContextSuite
 
     def get():
         return testQueue.get(timeout=config.multiprocess_timeout)
@@ -700,8 +702,6 @@ def __runner(ix, testQueue, resultQueue, currentaddr, currentstart,
             log.exception('Worker %d STOPPED',ix)
             break
         result = makeResult()
-        loader = loaderClass(config=config)
-        loader.suiteClass.suiteClass = NoSharedFixtureContextSuite
         test = loader.loadTestsFromNames([test_addr])
         test.testQueue = testQueue
         test.tasks = []

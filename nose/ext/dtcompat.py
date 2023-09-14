@@ -2245,7 +2245,7 @@ def debug_script(src, pm=False, globs=None):
 
         if pm:
             try:
-                exec(compile(open(srcfilename, "rb").read(), srcfilename, 'exec'), globs, globs)
+                exec(compile(open(srcfilename).read(), srcfilename, 'exec'), globs, globs)
             except:
                 print(sys.exc_info()[1])
                 pdb.post_mortem(sys.exc_info()[2])

@@ -21,10 +21,11 @@ from nose.config import Config
 from nose.importer import Importer, add_path, remove_path
 from nose.selector import defaultSelector, TestAddress
 from nose.util import func_lineno, getpackage, isclass, isgenerator, \
-    ispackage, regex_last_key, resolve_name, src, transplant_func, \
+    ispackage, regex_last_key, resolve_name, transplant_func, \
     transplant_class, test_address
 from nose.suite import ContextSuiteFactory, ContextList, LazySuite
 from nose.pyversion import sort_list, cmp_to_key
+import collections
 
 
 log = logging.getLogger(__name__)
@@ -153,8 +154,6 @@ class TestLoader(unittest.TestLoader):
             # http://code.google.com/p/python-nose/issues/detail?id=82
             if entry.startswith('.'):
                 continue
-            if src(entry) == '__init__.py':
-                continue
             entry_path = op_abspath(op_join(path, entry))
             is_file = op_isfile(entry_path)
             wanted = False
@@ -252,7 +251,7 @@ class TestLoader(unittest.TestLoader):
             try:
                 for test in g():
                     test_func, arg = self.parseGeneratedTest(test)
-                    if not callable(test_func):
+                    if not isinstance(test_func, collections.abc.Callable):
                         test_func = getattr(m, test_func)
                     yield FunctionTestCase(test_func, arg=arg, descriptor=g)
             except KeyboardInterrupt:
@@ -285,11 +284,11 @@ class TestLoader(unittest.TestLoader):
             try:
                 for test in g():
                     test_func, arg = self.parseGeneratedTest(test)
-                    if not callable(test_func):
+                    if not isinstance(test_func, collections.abc.Callable):
                         test_func = unbound_method(c, getattr(c, test_func))
                     if ismethod(test_func):
                         yield MethodTestCase(test_func, arg=arg, descriptor=g)
-                    elif callable(test_func):
+                    elif isinstance(test_func, collections.abc.Callable):
                         # In this case we're forcing the 'MethodTestCase'
                         # to run the inline function as its test call,
                         # but using the generator method as the 'method of

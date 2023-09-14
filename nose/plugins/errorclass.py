@@ -42,7 +42,7 @@ Let's see the plugin in action. First some boilerplate.
     ...     from unittest.runner import _WritelnDecorator
     ... except ImportError:
     ...     from unittest import _WritelnDecorator
-    ...
+    ... 
     >>> buf = _WritelnDecorator(sys.stdout)
 
 Now define a test case that raises a Todo.
@@ -207,3 +207,4 @@ def add_skip_patch(result):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
+

@@ -194,13 +194,6 @@ class LogCapture(Plugin):
             if isinstance(handler, MyMemoryHandler):
                 root_logger.handlers.remove(handler)
         root_logger.addHandler(self.handler)
-        # Also patch any non-propagating loggers in the tree
-        for logger in list(logging.Logger.manager.loggerDict.values()):
-            if not getattr(logger, 'propagate', True) and hasattr(logger, "addHandler"):
-                for handler in logger.handlers[:]:
-                    if isinstance(handler, MyMemoryHandler):
-                        logger.handlers.remove(handler)
-                logger.addHandler(self.handler)
         # to make sure everything gets captured
         loglevel = getattr(self, "loglevel", "NOTSET")
         root_logger.setLevel(getattr(logging, loglevel))

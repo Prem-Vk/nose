@@ -7,6 +7,7 @@ import re
 import sys
 import textwrap
 import tokenize
+import collections
 
 try:
     from io import StringIO
@@ -181,14 +182,14 @@ class Expander:
             # Clean this junk up
             try:
                 val = self.locals[tok]
-                if callable(val):
+                if isinstance(val, collections.abc.Callable):
                     val = tok
                 else:
                     val = repr(val)
             except KeyError:
                 try:
                     val = self.globals[tok]
-                    if callable(val):
+                    if isinstance(val, collections.abc.Callable):
                         val = tok
                     else:
                         val = repr(val)
